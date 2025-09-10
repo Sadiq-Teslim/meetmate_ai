@@ -3,7 +3,6 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 // import TestPage from './pages/testPage';  
-// You will create these files later for your dashboard
 import DashboardLayout from './pages/DashboardPage'; 
 // import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/ProfilePage';
