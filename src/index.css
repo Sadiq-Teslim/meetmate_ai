@@ -16,8 +16,7 @@
 
 body {
     font-family: "Inter", sans-serif;
-    /* This creates the beautiful, moving aurora background effect */
-    background-color: #0b0f19;
+    background-color: #0B1E3D;
     /* A deep navy fallback */
     background-image: radial-gradient( at 20% 20%, hsla(212, 90%, 30%, 0.3) 0px, transparent 50%), radial-gradient(at 80% 20%, hsla(266, 90%, 40%, 0.2) 0px, transparent 50%), radial-gradient(at 20% 80%, hsla(190, 90%, 35%, 0.3) 0px, transparent 50%), radial-gradient(at 80% 80%, hsla(340, 90%, 40%, 0.2) 0px, transparent 50%);
     background-size: 200% 200%;
