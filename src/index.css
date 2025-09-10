@@ -1,0 +1,25 @@
+/* src/index.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap");
+@import "tailwindcss";
+@keyframes gradient-pan {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    /* This creates the beautiful, moving aurora background effect */
+    background-color: #0b0f19;
+    /* A deep navy fallback */
+    background-image: radial-gradient( at 20% 20%, hsla(212, 90%, 30%, 0.3) 0px, transparent 50%), radial-gradient(at 80% 20%, hsla(266, 90%, 40%, 0.2) 0px, transparent 50%), radial-gradient(at 20% 80%, hsla(190, 90%, 35%, 0.3) 0px, transparent 50%), radial-gradient(at 80% 80%, hsla(340, 90%, 40%, 0.2) 0px, transparent 50%);
+    background-size: 200% 200%;
+    animation: gradient-pan 20s ease infinite;
+}
