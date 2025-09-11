@@ -1,6 +1,6 @@
 import React from "react";
 import { SettingsContainer } from "../components/SettingsContainer";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const AccountSettings: React.FC = () => {
   return (
