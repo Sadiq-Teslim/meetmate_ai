@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { socket } from "../services/socketService"; 
+import { socket } from "../services/socketService";
 import {
   FaMicrophone,
   FaRegCircle,
@@ -76,12 +76,12 @@ const Header: React.FC<{ connectionStatus: "connected" | "disconnected" }> = ({
                 >
                   <FaUserEdit /> <span>Edit Profile</span>
                 </Link>
-                <a
-                  href="#"
+                <Link
+                  to="/settings"
                   className="flex items-center space-x-3 px-4 py-2 text-slate-300 hover:bg-slate-700 transition-colors"
                 >
                   <FaCog /> <span>Settings</span>
-                </a>
+                </Link>
               </motion.div>
             )}
           </AnimatePresence>
@@ -92,13 +92,21 @@ const Header: React.FC<{ connectionStatus: "connected" | "disconnected" }> = ({
 };
 
 // --- CHILD COMPONENT: MeetingControls ---
-const MeetingControls: React.FC<{
+interface MeetingControlProps {
   status: ListeningStatus;
   onConnect: () => void;
   onStop: () => void;
   onSummarize: () => void;
   isSummarizing: boolean;
-}> = ({ status, onConnect, onStop, onSummarize, isSummarizing }) => {
+}
+
+const MeetingControls: React.FC<MeetingControlProps> = ({
+  status,
+  onConnect,
+  onStop,
+  onSummarize,
+  isSummarizing,
+}) => {
   return (
     <div className="space-y-4">
       <motion.button
@@ -163,12 +171,16 @@ const TranscriptViewer: React.FC<{ lines: TranscriptLine[] }> = ({ lines }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+      scrollContainerRef.current.scrollTop =
+        scrollContainerRef.current.scrollHeight;
     }
   }, [lines]);
 
   return (
-    <div ref={scrollContainerRef} className="h-96 overflow-y-auto space-y-4 pr-2">
+    <div
+      ref={scrollContainerRef}
+      className="h-96 overflow-y-auto space-y-4 pr-2"
+    >
       <AnimatePresence initial={false}>
         {lines.map((line, index) => (
           <motion.div
@@ -177,10 +189,14 @@ const TranscriptViewer: React.FC<{ lines: TranscriptLine[] }> = ({ lines }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className={`flex items-start space-x-3 ${line.isQuestion ? 'p-3 bg-blue-900/50 rounded-lg' : ''}`}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className={`flex items-start space-x-3 ${
+              line.isQuestion ? "p-3 bg-blue-900/50 rounded-lg" : ""
+            }`}
           >
-            {line.isQuestion && <FaQuestionCircle className="text-blue-400 mt-1 flex-shrink-0" />}
+            {line.isQuestion && (
+              <FaQuestionCircle className="text-blue-400 mt-1 flex-shrink-0" />
+            )}
             <p className="text-slate-200 leading-relaxed">{line.text}</p>
           </motion.div>
         ))}
@@ -232,13 +248,19 @@ const SummaryDisplay: React.FC<{ summary: string | null }> = ({ summary }) => {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center text-slate-500">
         <FaFileAlt className="text-4xl mb-2" />
-        <p>Your meeting summary will be generated here after you stop listening.</p>
+        <p>
+          Your meeting summary will be generated here after you stop listening.
+        </p>
       </div>
     );
   }
 
-  const keyPoints = summary.split('\n').filter(line => line.toLowerCase().startsWith('key point:'));
-  const actionItems = summary.split('\n').filter(line => line.toLowerCase().startsWith('action item:'));
+  const keyPoints = summary
+    .split("\n")
+    .filter((line) => line.toLowerCase().startsWith("key point:"));
+  const actionItems = summary
+    .split("\n")
+    .filter((line) => line.toLowerCase().startsWith("action item:"));
 
   return (
     <div className="space-y-6">
@@ -248,7 +270,9 @@ const SummaryDisplay: React.FC<{ summary: string | null }> = ({ summary }) => {
           <span>Key Takeaways</span>
         </h3>
         <ul className="space-y-2 list-inside text-slate-300">
-          {keyPoints.map((point, index) => <li key={index}>{point.replace('Key Point:', '').trim()}</li>)}
+          {keyPoints.map((point, index) => (
+            <li key={index}>{point.replace("Key Point:", "").trim()}</li>
+          ))}
         </ul>
       </div>
       <div>
@@ -257,13 +281,14 @@ const SummaryDisplay: React.FC<{ summary: string | null }> = ({ summary }) => {
           <span>Action Items</span>
         </h3>
         <ul className="space-y-2 list-inside text-slate-300">
-          {actionItems.map((item, index) => <li key={index}>{item.replace('Action Item:', '').trim()}</li>)}
+          {actionItems.map((item, index) => (
+            <li key={index}>{item.replace("Action Item:", "").trim()}</li>
+          ))}
         </ul>
       </div>
     </div>
   );
 };
-
 
 // --- THE MAIN DASHBOARD LAYOUT COMPONENT ---
 const DashboardLayout: React.FC = () => {
@@ -274,40 +299,51 @@ const DashboardLayout: React.FC = () => {
   const [qaPairs, setQaPairs] = useState<QaPair[]>([]);
   const [summary, setSummary] = useState<string | null>(null);
   const [isSummarizing, setIsSummarizing] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<"connected" | "disconnected">("disconnected");
-  
+  const [connectionStatus, setConnectionStatus] = useState<
+    "connected" | "disconnected"
+  >("disconnected");
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     socket.connect();
-    
-    socket.on('connect', () => setConnectionStatus('connected'));
-    socket.on('disconnect', () => setConnectionStatus('disconnected'));
-    
-    const handleTranscriptUpdate = (data: { text: string, isQuestion?: boolean }) => {
-      setTranscript(prev => [...prev, { text: data.text, isQuestion: data.isQuestion || false }]);
+
+    socket.on("connect", () => setConnectionStatus("connected"));
+    socket.on("disconnect", () => setConnectionStatus("disconnected"));
+
+    const handleTranscriptUpdate = (data: {
+      text: string;
+      isQuestion?: boolean;
+    }) => {
+      setTranscript((prev) => [
+        ...prev,
+        { text: data.text, isQuestion: data.isQuestion || false },
+      ]);
     };
-    
-    const handleAiAnswer = (data: { question: string, answer: string }) => {
-      setQaPairs(prev => [...prev, { question: data.question, answer: data.answer }]);
+
+    const handleAiAnswer = (data: { question: string; answer: string }) => {
+      setQaPairs((prev) => [
+        ...prev,
+        { question: data.question, answer: data.answer },
+      ]);
     };
-    
+
     const handleSummaryGenerated = (data: { summary: string }) => {
       setSummary(data.summary);
       setIsSummarizing(false);
     };
 
-    socket.on('transcript_update', handleTranscriptUpdate);
-    socket.on('ai_answer', handleAiAnswer);
-    socket.on('summary_generated', handleSummaryGenerated);
+    socket.on("transcript_update", handleTranscriptUpdate);
+    socket.on("ai_answer", handleAiAnswer);
+    socket.on("summary_generated", handleSummaryGenerated);
 
     return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('transcript_update', handleTranscriptUpdate);
-      socket.off('ai_answer', handleAiAnswer);
-      socket.off('summary_generated', handleSummaryGenerated);
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("transcript_update", handleTranscriptUpdate);
+      socket.off("ai_answer", handleAiAnswer);
+      socket.off("summary_generated", handleSummaryGenerated);
       socket.disconnect();
     };
   }, []);
@@ -316,94 +352,127 @@ const DashboardLayout: React.FC = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioStreamRef.current = stream;
-      
+
       const recorder = new MediaRecorder(stream);
       mediaRecorderRef.current = recorder;
-      
+
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          socket.emit('audio_chunk', event.data);
+          socket.emit("audio_chunk", event.data);
         }
       };
-      
+
       recorder.start(1000);
 
       setStatus("listening");
       setTranscript([{ text: "Microphone connected! Listening..." }]);
       setQaPairs([]);
       setSummary(null);
-      socket.emit('start_listening');
-
+      socket.emit("start_listening");
     } catch (error) {
       console.error("Error accessing microphone:", error);
-      alert("Microphone access was denied. Please allow microphone access in your browser settings.");
+      alert(
+        "Microphone access was denied. Please allow microphone access in your browser settings."
+      );
     }
   };
 
   const handleStop = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state === "recording"
+    ) {
       mediaRecorderRef.current.stop();
     }
     if (audioStreamRef.current) {
-      audioStreamRef.current.getTracks().forEach(track => track.stop());
+      audioStreamRef.current.getTracks().forEach((track) => track.stop());
       audioStreamRef.current = null;
     }
-    
+
     setStatus("stopped");
-    setTranscript((prev) => [...prev, { text: "--- Listening stopped. You can now generate a summary. ---" }]);
-    socket.emit('stop_listening');
+    setTranscript((prev) => [
+      ...prev,
+      { text: "--- Listening stopped. You can now generate a summary. ---" },
+    ]);
+    socket.emit("stop_listening");
   };
 
   const handleSummarize = () => {
-    if (status !== 'stopped' || isSummarizing || transcript.length <= 1) return;
+    if (status !== "stopped" || isSummarizing || transcript.length <= 1) return;
     setIsSummarizing(true);
-    const fullTranscript = transcript.map(line => line.text).join('\n');
-    socket.emit('generate_summary', { transcript: fullTranscript });
+    const fullTranscript = transcript.map((line) => line.text).join("\n");
+    socket.emit("generate_summary", { transcript: fullTranscript });
   };
 
   return (
     <div className="min-h-screen text-slate-200 font-sans">
       <Header connectionStatus={connectionStatus} />
-      
+
       <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <AnimatePresence>
-              {status === 'listening' && (
+              {status === "listening" && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-2xl p-6 flex flex-col items-center justify-center"
                 >
-                  <p className="text-sm font-semibold text-slate-300 mb-2">LIVE AUDIO INPUT</p>
+                  <p className="text-sm font-semibold text-slate-300 mb-2">
+                    LIVE AUDIO INPUT
+                  </p>
                   <AudioVisualizer audioStream={audioStreamRef.current} />
                 </motion.div>
               )}
             </AnimatePresence>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
+            >
               <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-2xl p-6">
-                <h2 className="text-2xl font-bold mb-4 text-white">Live Transcript</h2>
+                <h2 className="text-2xl font-bold mb-4 text-white">
+                  Live Transcript
+                </h2>
                 <TranscriptViewer lines={transcript} />
               </div>
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
+            >
               <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-2xl p-6">
-                <h2 className="text-2xl font-bold mb-4 text-white">AI Assistance</h2>
+                <h2 className="text-2xl font-bold mb-4 text-white">
+                  AI Assistance
+                </h2>
                 <QAInterface qaPairs={qaPairs} />
               </div>
             </motion.div>
           </div>
           <div className="lg:col-span-1 space-y-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}
+            >
               <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-2xl p-6">
                 <h2 className="text-2xl font-bold mb-4 text-white">Controls</h2>
-                <MeetingControls status={status} onConnect={handleConnect} onStop={handleStop} onSummarize={handleSummarize} isSummarizing={isSummarizing} />
+                <MeetingControls
+                  status={status}
+                  onConnect={handleConnect}
+                  onStop={handleStop}
+                  onSummarize={handleSummarize}
+                  isSummarizing={isSummarizing}
+                />
               </div>
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
+            >
               <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-2xl p-6">
-                <h2 className="text-2xl font-bold mb-4 text-white">Meeting Summary</h2>
+                <h2 className="text-2xl font-bold mb-4 text-white">
+                  Meeting Summary
+                </h2>
                 <SummaryDisplay summary={summary} />
               </div>
             </motion.div>
