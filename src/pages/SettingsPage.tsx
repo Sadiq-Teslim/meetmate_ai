@@ -13,6 +13,9 @@ import AccountSettings from "../features/AccountSettings";
 import CollaborationSettings from "../features/CollaborationSettings";
 import { MdSecurity } from "react-icons/md";
 import AIAssistantantSettings from "../features/AIAssistantantSettings";
+import NotificationSettings from "../features/NotificationSettings";
+import AppearanceSettings from "../features/AppearanceSettings";
+import SecuritySettings from "../features/SecuritySettings";
 
 const navigationTabs = [
   { id: "account", label: "Account", icon: <BiUser /> },
@@ -83,6 +86,9 @@ const SettingsPage: React.FC = () => {
           {activeTab === "account" && <AccountSettings />}
           {activeTab === "collaboration" && <CollaborationSettings />}
           {activeTab === "aiAssistant" && <AIAssistantantSettings />}
+          {activeTab === "notifications" && <NotificationSettings />}
+          {activeTab === "appearance" && <AppearanceSettings />}
+          {activeTab === "security" && <SecuritySettings />}
         </div>
       </div>
     </motion.div>
