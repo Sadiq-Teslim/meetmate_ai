@@ -7,7 +7,7 @@ const AccountSettings: React.FC = () => {
     <SettingsContainer
       title="Account"
       description="Manage your profile information and account details."
-      className="flex-1 w-full"
+      className="flex-1"
     >
       <div className="space-y-4 mb-6">
         <h3 className="text-white font-medium">Change Password</h3>
@@ -60,7 +60,6 @@ const AccountSettings: React.FC = () => {
         whileHover={{ scale: status === "idle" ? 1.03 : 1 }}
         whileTap={{ scale: status === "idle" ? 0.98 : 1 }}
       >
-        {/* <FaMicrophone /> */}
         <span>Save Changes</span>
       </motion.button>
     </SettingsContainer>

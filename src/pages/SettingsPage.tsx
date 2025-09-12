@@ -12,11 +12,12 @@ import { BiUser } from "react-icons/bi";
 import AccountSettings from "../features/AccountSettings";
 import CollaborationSettings from "../features/CollaborationSettings";
 import { MdSecurity } from "react-icons/md";
+import AIAssistantantSettings from "../features/AIAssistantantSettings";
 
 const navigationTabs = [
   { id: "account", label: "Account", icon: <BiUser /> },
   { id: "collaboration", label: "Collaboration", icon: <FaUsers /> },
-  { id: "ai-assistant", label: "AI Assistant", icon: <FaRobot /> },
+  { id: "aiAssistant", label: "AI Assistant", icon: <FaRobot /> },
   { id: "notifications", label: "Notifications", icon: <FaBell /> },
   { id: "appearance", label: "Appearance", icon: <FaPalette /> },
   { id: "security", label: "Security", icon: <MdSecurity /> },
@@ -81,6 +82,7 @@ const SettingsPage: React.FC = () => {
         <div className="flex-1 ">
           {activeTab === "account" && <AccountSettings />}
           {activeTab === "collaboration" && <CollaborationSettings />}
+          {activeTab === "aiAssistant" && <AIAssistantantSettings />}
         </div>
       </div>
     </motion.div>
