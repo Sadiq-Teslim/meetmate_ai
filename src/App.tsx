@@ -1,5 +1,4 @@
 // src/App.tsx
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 // import TestPage from './pages/testPage';

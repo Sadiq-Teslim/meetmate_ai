@@ -61,7 +61,7 @@ const SecuritySettings: React.FC = () => {
               </p>
             </div>
             <motion.button
-              className="flex items-center justify-center md:space-x-2 bg-red-800 md:text-[1.5rem] text-[.7rem] text-white font-bold py-3 md:px-6 px-4 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:saturate-150 cursor-pointer"
+              className="flex items-center justify-center md:space-x-2 bg-red-800 md:text-[.8rem] text-[.7rem] text-white font-bold py-3 md:px-6 px-4 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:saturate-150 cursor-pointer"
               whileHover={{ scale: status === "idle" ? 1.03 : 1 }}
               whileTap={{ scale: status === "idle" ? 0.98 : 1 }}
             >
