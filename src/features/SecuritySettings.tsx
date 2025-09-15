@@ -1,6 +1,7 @@
 import React from "react";
 import { SettingsContainer } from "../components/SettingsContainer";
 import { motion } from "framer-motion";
+import { TrashIcon } from "lucide-react";
 
 const SecuritySettings: React.FC = () => {
   return (
@@ -51,8 +52,8 @@ const SecuritySettings: React.FC = () => {
 
       <div className="space-y-4">
         <h3 className="text-red-400 font-medium">Danger Zone</h3>
-        <div className="p-4 bg-red-950/20 border border-red-800/30 rounded-lg">
-          <div className="flex items-center justify-between">
+        <div className="p-4 bg-red-950/20 border border-red-800/30 rounded-lg ">
+          <div className="flex md:items-center items-start justify-between md:flex-row flex-col gap-y-3">
             <div>
               <p className="text-white font-medium">Delete Account</p>
               <p className="text-sm text-slate-400">
@@ -60,7 +61,7 @@ const SecuritySettings: React.FC = () => {
               </p>
             </div>
             <motion.button
-              className="flex items-center justify-center space-x-2 bg-red-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:saturate-150 cursor-pointer"
+              className="flex items-center justify-center md:space-x-2 bg-red-800 md:text-[1.5rem] text-[.7rem] text-white font-bold py-3 md:px-6 px-4 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:saturate-150 cursor-pointer"
               whileHover={{ scale: status === "idle" ? 1.03 : 1 }}
               whileTap={{ scale: status === "idle" ? 0.98 : 1 }}
             >
